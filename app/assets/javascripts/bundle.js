@@ -51,9 +51,12 @@
 	note = __webpack_require__(163);
 	keyListeners = __webpack_require__(164);
 	Store = __webpack_require__(168);
+	Key = __webpack_require__(186);
 	keyListeners();
 	
-	// ReactDOM.render(<TodoList />, root);
+	$(document).ready(function (e) {
+	  ReactDOM.render(React.createElement(Key, { noteName: 'D4' }), $("#content")[0]);
+	});
 
 /***/ },
 /* 1 */
@@ -20001,7 +20004,7 @@
 	
 	Note.prototype = {
 	  start: function () {
-	    debugger;
+	    // debugger;
 	    // can't explain 0.3, it is a reasonable value
 	    this.gainNode.gain.value = 0.3;
 	  },
@@ -20111,7 +20114,14 @@
 	
 	KeyStore.removeNote = function (note) {
 	  delete _keys[note];
-	  // debugger;
+	};
+	
+	KeyStore.includes = function (note) {
+	  if (_keys[note]) {
+	    return true;
+	  } else {
+	    return false;
+	  }
 	};
 	
 	KeyStore.__onDispatch = function (payload) {
@@ -20125,6 +20135,7 @@
 	      KeyStore.__emitChange();
 	      break;
 	    case "keyReleased":
+	      // debugger
 	      KeyStore.removeNote(noteName);
 	      KeyStore.__emitChange();
 	      break;
@@ -26577,6 +26588,54 @@
 	
 	module.exports = FluxMixinLegacy;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var KeyStore = __webpack_require__(168);
+	var KeyListener = __webpack_require__(164);
+	var Note = __webpack_require__(163);
+	var TONES = __webpack_require__(167);
+	var Dispatcher = __webpack_require__(162);
+	
+	var Key = React.createClass({
+	  displayName: "Key",
+	
+	  getInitialState: function () {
+	    return { notes: [] };
+	  },
+	  componentDidMount: function () {
+	
+	    this.note = new Note(TONES[this.props.noteName]);
+	    this.keyStoreToken = KeyStore.addListener(this.setStatefromStore);
+	  },
+	
+	  setStatefromStore: function () {
+	    // this.setState({ keys: keyStore.all()} );
+	    if (KeyStore.includes(this.props.noteName)) {
+	      this.note.start();
+	    } else {
+	      this.note.stop();
+	    }
+	  },
+	
+	  componentWillUnmount: function () {
+	    this.note.stop();
+	    this.keyStoreToken.remove();
+	  },
+	
+	  render: function () {
+	    // debugger
+	    return React.createElement(
+	      "div",
+	      null,
+	      this.props.noteName
+	    );
+	  }
+	});
+	module.exports = Key;
 
 /***/ }
 /******/ ]);

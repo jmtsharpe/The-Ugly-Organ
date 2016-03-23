@@ -24,7 +24,7 @@ var Note = function (freq) {
 
 Note.prototype = {
   start: function () {
-    debugger;
+    // debugger;
     // can't explain 0.3, it is a reasonable value
     this.gainNode.gain.value = 0.3;
   },

@@ -19,6 +19,7 @@ KeyStore.all = function() {
 };
 
 
+
 KeyStore.find = function() {
   return _keys[name];
 };
@@ -30,7 +31,15 @@ KeyStore.addNote = function (note) {
 
 KeyStore.removeNote = function (note) {
   delete _keys[note];
-  // debugger;
+
+};
+
+KeyStore.includes = function (note) {
+  if (_keys[note]) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 
@@ -45,6 +54,7 @@ KeyStore.__onDispatch = function (payload) {
     KeyStore.__emitChange();
     break;
   case "keyReleased":
+    // debugger
     KeyStore.removeNote(noteName);
     KeyStore.__emitChange();
     break;
